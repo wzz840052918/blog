@@ -99,7 +99,7 @@
     <root level="${LOG_ROOT_LEVEL}">
 
         <!-- 标识这个"${STDOUT}"将会添加到这个logger -->
-        <appender-ref ref="${STDOUT}"/>
+<!--        <appender-ref ref="${STDOUT}"/>-->
 
         <!-- FILE_ALL 日志输出添加到 logger -->
         <appender-ref ref="FILE_ALL"/>

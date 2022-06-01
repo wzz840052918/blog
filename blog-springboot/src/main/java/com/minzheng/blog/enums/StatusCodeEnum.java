@@ -47,7 +47,12 @@ public enum StatusCodeEnum {
     /**
      * 微博登录错误
      */
-    WEIBO_LOGIN_ERROR(53002, "微博登录错误");
+    WEIBO_LOGIN_ERROR(53002, "微博登录错误"),
+    /**
+     * 接口限流
+     */
+    INTERFACE_RATE_LIMITER(50200, "服务繁忙，请稍后再试")
+    ;
 
     /**
      * 状态码

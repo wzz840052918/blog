@@ -2,8 +2,6 @@ package com.minzheng.blog.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.minzheng.blog.dto.EmailDTO;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -21,7 +19,7 @@ import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_QUEUE;
  * @since 1.0.0
  **/
 @Component
-@RabbitListener(queues = EMAIL_QUEUE)
+//@RabbitListener(queues = EMAIL_QUEUE)
 public class EmailConsumer {
 
     /**
@@ -33,7 +31,7 @@ public class EmailConsumer {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    @RabbitHandler
+//    @RabbitHandler
     public void process(byte[] data) {
         EmailDTO emailDTO = JSON.parseObject(new String(data), EmailDTO.class);
         SimpleMailMessage message = new SimpleMailMessage();

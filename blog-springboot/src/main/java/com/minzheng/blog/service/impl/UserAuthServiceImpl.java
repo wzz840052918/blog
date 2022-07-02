@@ -5,13 +5,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.constant.CommonConst;
+import com.minzheng.blog.dao.UserAuthDao;
 import com.minzheng.blog.dao.UserInfoDao;
 import com.minzheng.blog.dao.UserRoleDao;
-import com.minzheng.blog.dto.*;
-import com.minzheng.blog.entity.UserInfo;
+import com.minzheng.blog.dto.EmailDTO;
+import com.minzheng.blog.dto.UserAreaDTO;
+import com.minzheng.blog.dto.UserBackDTO;
+import com.minzheng.blog.dto.UserInfoDTO;
 import com.minzheng.blog.entity.UserAuth;
-import com.minzheng.blog.dao.UserAuthDao;
+import com.minzheng.blog.entity.UserInfo;
 import com.minzheng.blog.entity.UserRole;
 import com.minzheng.blog.enums.LoginTypeEnum;
 import com.minzheng.blog.enums.RoleEnum;
@@ -19,25 +23,23 @@ import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.service.BlogInfoService;
 import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.UserAuthService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.strategy.context.SocialLoginStrategyContext;
 import com.minzheng.blog.util.PageUtils;
 import com.minzheng.blog.util.UserUtils;
 import com.minzheng.blog.vo.*;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.minzheng.blog.constant.CommonConst.*;
-import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_EXCHANGE;
 import static com.minzheng.blog.constant.RedisPrefixConst.*;
 import static com.minzheng.blog.enums.UserAreaTypeEnum.getUserAreaType;
 import static com.minzheng.blog.util.CommonUtils.checkEmail;
@@ -62,8 +64,8 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
     private UserInfoDao userInfoDao;
     @Autowired
     private BlogInfoService blogInfoService;
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+//    @Autowired
+//    private RabbitTemplate rabbitTemplate;
     @Autowired
     private SocialLoginStrategyContext socialLoginStrategyContext;
 
@@ -81,7 +83,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
                 .subject("验证码")
                 .content("您的验证码为 " + code + " 有效期15分钟，请不要告诉他人哦！")
                 .build();
-        rabbitTemplate.convertAndSend(EMAIL_EXCHANGE, "*", new Message(JSON.toJSONBytes(emailDTO), new MessageProperties()));
+//        rabbitTemplate.convertAndSend(EMAIL_EXCHANGE, "*", new Message(JSON.toJSONBytes(emailDTO), new MessageProperties()));
         // 将验证码存入redis，设置过期时间为15分钟
         redisService.set(USER_CODE_KEY + username, code, CODE_EXPIRE_TIME);
     }

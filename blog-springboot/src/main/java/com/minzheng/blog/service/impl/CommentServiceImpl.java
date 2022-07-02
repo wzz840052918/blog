@@ -1,39 +1,37 @@
 package com.minzheng.blog.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.dao.ArticleDao;
+import com.minzheng.blog.dao.CommentDao;
 import com.minzheng.blog.dao.TalkDao;
 import com.minzheng.blog.dao.UserInfoDao;
 import com.minzheng.blog.dto.*;
 import com.minzheng.blog.entity.Comment;
-import com.minzheng.blog.dao.CommentDao;
 import com.minzheng.blog.service.BlogInfoService;
 import com.minzheng.blog.service.CommentService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.util.HTMLUtils;
 import com.minzheng.blog.util.PageUtils;
 import com.minzheng.blog.util.UserUtils;
 import com.minzheng.blog.vo.*;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static com.minzheng.blog.constant.CommonConst.*;
-import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_EXCHANGE;
 import static com.minzheng.blog.constant.RedisPrefixConst.COMMENT_LIKE_COUNT;
 import static com.minzheng.blog.constant.RedisPrefixConst.COMMENT_USER_LIKE;
-import static com.minzheng.blog.enums.CommentTypeEnum.*;
+import static com.minzheng.blog.enums.CommentTypeEnum.getCommentEnum;
+import static com.minzheng.blog.enums.CommentTypeEnum.getCommentPath;
 
 /**
  * 评论服务
@@ -54,8 +52,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     private RedisService redisService;
     @Autowired
     private UserInfoDao userInfoDao;
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+//    @Autowired
+//    private RabbitTemplate rabbitTemplate;
     @Autowired
     private BlogInfoService blogInfoService;
 
@@ -221,7 +219,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                 emailDTO.setSubject("审核提醒");
                 emailDTO.setContent("您收到了一条新的回复，请前往后台管理页面审核");
             }
-            rabbitTemplate.convertAndSend(EMAIL_EXCHANGE, "*", new Message(JSON.toJSONBytes(emailDTO), new MessageProperties()));
+//            rabbitTemplate.convertAndSend(EMAIL_EXCHANGE, "*", new Message(JSON.toJSONBytes(emailDTO), new MessageProperties()));
         }
     }
 
